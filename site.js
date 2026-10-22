@@ -116,7 +116,7 @@
       .catch(function () {
         btn.disabled = false;
         status.dataset.kind = 'error';
-        status.textContent = "Sorry, that didn't go through. Please try again, or email BrineCreative@brinemarketing.com or call (970) 534-4163.";
+        status.textContent = "Sorry, that didn't go through. Please try again, or email BrineCreative@brinemarketing.com or call (970) 587-3824.";
       });
   });
 
