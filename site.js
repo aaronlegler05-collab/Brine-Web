@@ -1,10 +1,9 @@
-﻿// Brine Creative: small, dependency-free site script.
+// Brine Creative: small, dependency-free site script.
 // No analytics, no tracking, no third-party code. The only browser storage is
 // one localStorage key remembering that the cookie notice was dismissed.
 (function () {
   document.documentElement.classList.add('js');
 
-  var CONTACT_EMAIL = 'BrineCreative@brinemarketing.com';
   var NOTICE_KEY = 'brine-notice-dismissed';
 
   // Mobile menu
@@ -58,7 +57,7 @@
     });
   });
 
-  // Booking form: validates, then opens the visitor's email app. Nothing is sent to or stored on a server.
+  // Booking form: validates, then posts to FormSubmit, which emails us the request and emails the visitor a copy.
   var form = document.getElementById('book-form');
   if (!form) return;
   var status = document.getElementById('form-status');
@@ -70,7 +69,6 @@
   }
 
   form.addEventListener('submit', function (e) {
-    e.preventDefault();
     var f = form.elements;
     var firstBad = null;
     var checks = [
@@ -85,6 +83,7 @@
       if (c[1] && !firstBad) firstBad = c[0];
     });
     if (firstBad) {
+      e.preventDefault();
       status.hidden = false;
       status.dataset.kind = 'error';
       status.textContent = 'A few details are missing. Check the highlighted fields.';
@@ -92,24 +91,11 @@
       return;
     }
 
-    var body = [
-      'Name: ' + f.name.value.trim(),
-      'Business: ' + f.business.value.trim(),
-      'Email: ' + f.email.value.trim(),
-      'Phone: ' + (f.phone.value.trim() || 'not given'),
-      'Interested in: ' + f.package.value,
-      'Okay to email occasional updates: ' + (f.updates.checked ? 'yes' : 'no'),
-      '',
-      f.message.value.trim()
-    ].join('\n');
-
-    window.location.href = 'mailto:' + CONTACT_EMAIL +
-      '?subject=' + encodeURIComponent('Consult request: ' + f.business.value.trim()) +
-      '&body=' + encodeURIComponent(body);
-
+    // After sending, FormSubmit brings the visitor back to our thank-you page
+    f._next.value = new URL('thanks.html', location.href).href;
     status.hidden = false;
     status.dataset.kind = 'ok';
-    status.textContent = 'Your email app should open with the request filled in. Press send there and weâ€™ll reply within one business day. If nothing opened, email ' + CONTACT_EMAIL + ' or call (970) 534-4163.';
+    status.textContent = 'Sending your request...';
   });
 
   form.addEventListener('input', function (e) {
