@@ -235,10 +235,8 @@
       </div>
 
       <form class="book" id="book-form" action="https://formsubmit.co/BrineCreative@brinemarketing.com" method="POST" novalidate aria-describedby="form-privacy-note">
-        <input type="hidden" name="_subject" value="New consult request from brinemarketing.com">
         <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_autoresponse" value="Thanks for reaching out to Brine Creative! We got your consult request and will reply within one business day. A copy of what you sent is below. Questions in the meantime? Call or text (970) 534-4163.">
-        <input type="hidden" name="_next" value="">
+        <input type="hidden" name="_captcha" value="false">
         <div class="row2">
           <div class="field">
             <label for="f-name">Your name</label>
@@ -286,7 +284,7 @@
 
         <div class="form-foot">
           <button class="btn btn-primary" type="submit">Send request <svg aria-hidden="true"><use href="#arrow"/></svg></button>
-          <p id="form-privacy-note">Your request comes straight to us, and you'll get a copy by email. You may be asked to confirm you're not a robot.</p>
+          <p id="form-privacy-note">Your request comes straight to us, and you'll get a copy by email. It only takes a second.</p>
         </div>
         <div class="form-status" id="form-status" role="status" aria-live="polite" hidden></div>
       </form>
@@ -345,7 +343,7 @@
   <div class="row"><button class="btn btn-primary" type="button" data-dismiss>Got it</button></div>
 </aside>
 
-<script src="site.js?v=4"></script>
+<script src="site.js?v=5"></script>
 <script>
   // Pricing buttons pre-select the matching package in the form
   document.querySelectorAll('[data-package]').forEach(function (a) {

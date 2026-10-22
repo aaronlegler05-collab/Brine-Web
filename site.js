@@ -91,11 +91,33 @@
       return;
     }
 
-    // After sending, FormSubmit brings the visitor back to our thank-you page
-    f._next.value = new URL('thanks.html', location.href).href;
+    // Send in the background so the visitor never leaves our site. The visitor is CC'd, so they get a copy.
+    e.preventDefault();
+    var btn = form.querySelector('button[type="submit"]');
+    var data = Object.fromEntries(new FormData(form));
+    data._subject = 'Brine Creative consult request: ' + data.business;
+    data._cc = data.email;
+    btn.disabled = true;
     status.hidden = false;
     status.dataset.kind = 'ok';
     status.textContent = 'Sending your request...';
+
+    fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data),
+      signal: AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (String(res.success) !== 'true') throw new Error(res.message || 'not sent');
+        window.location.href = 'thanks.html';
+      })
+      .catch(function () {
+        btn.disabled = false;
+        status.dataset.kind = 'error';
+        status.textContent = "Sorry, that didn't go through. Please try again, or email BrineCreative@brinemarketing.com or call (970) 534-4163.";
+      });
   });
 
   form.addEventListener('input', function (e) {
