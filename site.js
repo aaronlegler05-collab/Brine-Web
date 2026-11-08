@@ -1,10 +1,13 @@
 // Brine Creative: small, dependency-free site script.
-// No analytics, no tracking, no third-party code. The only browser storage is
-// one localStorage key remembering that the cookie notice was dismissed.
+// Google Analytics and the Meta Pixel load ONLY after the visitor clicks Accept,
+// and never when the browser sends a Global Privacy Control signal.
 (function () {
   document.documentElement.classList.add('js');
 
-  var NOTICE_KEY = 'brine-notice-dismissed';
+  // >>> Paste your IDs here. While both are empty, nothing loads and no notice shows.
+  var GA_ID = 'G-FE8EQ3X87P';      // Google Analytics 4 Measurement ID, like 'G-XXXXXXXXXX'
+  var PIXEL_ID = '1167517992469722';   // Meta Pixel ID, a 15-16 digit number
+  var CONSENT_KEY = 'brine-consent';
 
   // Mobile menu
   var menuBtn = document.querySelector('.menu-btn');
@@ -38,24 +41,74 @@
     }
   }
 
-  // Cookie notice: informational. The site sets no cookies and loads no trackers.
+  // Cookie consent. Nothing non-essential loads until the visitor accepts.
   var notice = document.getElementById('cookie-notice');
-  function readDismissed() { try { return localStorage.getItem(NOTICE_KEY) === '1'; } catch (e) { return false; } }
-  function writeDismissed() { try { localStorage.setItem(NOTICE_KEY, '1'); } catch (e) { /* storage blocked: notice just reappears next visit */ } }
-  if (notice) {
-    if (!readDismissed()) notice.hidden = false;
-    notice.querySelector('[data-dismiss]').addEventListener('click', function () {
-      notice.hidden = true;
-      writeDismissed();
+  var tracking = !!(GA_ID || PIXEL_ID);
+  var gpc = navigator.globalPrivacyControl === true;
+  function getConsent() { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } }
+  function setConsent(v) { try { localStorage.setItem(CONSENT_KEY, v); } catch (e) { /* storage blocked: asked again next visit */ } }
+  var loaded = false;
+  function loadTracking() {
+    if (loaded || gpc) return;
+    loaded = true;
+    if (GA_ID) {
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag('js', new Date());
+      window.gtag('config', GA_ID);
+    }
+    if (PIXEL_ID) {
+      /* Standard Meta Pixel loader */
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('set', 'autoConfig', false, PIXEL_ID); // don't auto-collect form fields or button text
+      window.fbq('init', PIXEL_ID);
+      window.fbq('track', 'PageView');
+    }
+    // A booking request just went through: count it as a lead
+    if (document.body.dataset.page === 'thanks') {
+      if (window.gtag) window.gtag('event', 'generate_lead');
+      if (window.fbq) window.fbq('track', 'Lead');
+    }
+  }
+  function clearTrackingCookies() {
+    document.cookie.split(';').forEach(function (c) {
+      var name = c.split('=')[0].trim();
+      if (/^(_ga|_gid|_fbp|_fbc)/.test(name)) {
+        [location.hostname, '.' + location.hostname.replace(/^www\./, '')].forEach(function (d) {
+          document.cookie = name + '=; Max-Age=0; path=/; domain=' + d;
+        });
+        document.cookie = name + '=; Max-Age=0; path=/';
+      }
     });
   }
-  document.querySelectorAll('[data-open-notice]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      if (!notice) return;
-      notice.hidden = false;
-      notice.querySelector('[data-dismiss]').focus();
-    });
-  });
+  if (notice) {
+    if (!tracking) {
+      document.querySelectorAll('[data-open-notice]').forEach(function (b) { b.hidden = true; });
+    } else {
+      var choice = getConsent();
+      if (choice === 'granted') loadTracking();
+      else if (!choice && !gpc) notice.hidden = false;
+      notice.querySelectorAll('[data-consent]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var was = getConsent();
+          setConsent(b.dataset.consent);
+          notice.hidden = true;
+          if (b.dataset.consent === 'granted') loadTracking();
+          else if (was === 'granted') { clearTrackingCookies(); location.reload(); }
+        });
+      });
+      document.querySelectorAll('[data-open-notice]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          notice.hidden = false;
+          notice.querySelector('[data-consent]').focus();
+        });
+      });
+    }
+  }
 
   // Booking form: validates, then posts to FormSubmit, which emails us the request and emails the visitor a copy.
   var form = document.getElementById('book-form');

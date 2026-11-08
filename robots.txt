@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /_archive/
+Disallow: /thanks.html
+
+Sitemap: https://brinemarketing.com/sitemap.xml
