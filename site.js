@@ -155,12 +155,18 @@
     status.dataset.kind = 'ok';
     status.textContent = 'Sending your request...';
 
-    fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(data),
-      signal: AbortSignal.timeout ? AbortSignal.timeout(45000) : undefined
-    })
+    // >>> Paste the Google Apps Script web app URL here (see google-form-mailer.gs). Empty = use FormSubmit.
+    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJNkupeDy4ooZUXIi6_1I7VUnSX8MhSbO5boVh7E5vx67xWGhakM05u5pyI2cGjO1EDw/exec';
+    var send = SCRIPT_URL
+      // text/plain body keeps it a "simple" request, so no CORS preflight to Google
+      ? fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(data) })
+      : fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(data),
+          signal: AbortSignal.timeout ? AbortSignal.timeout(45000) : undefined
+        });
+    send
       .then(function (r) { return r.json(); })
       .then(function (res) {
         if (String(res.success) !== 'true') throw new Error(res.message || 'not sent');
