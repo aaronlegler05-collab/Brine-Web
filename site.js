@@ -159,7 +159,7 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(data),
-      signal: AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined
+      signal: AbortSignal.timeout ? AbortSignal.timeout(45000) : undefined
     })
       .then(function (r) { return r.json(); })
       .then(function (res) {
@@ -167,9 +167,14 @@
         window.location.href = 'thanks.html';
       })
       .catch(function () {
-        btn.disabled = false;
-        status.dataset.kind = 'error';
-        status.textContent = "Sorry, that didn't go through. Please try again, or email BrineCreative@brinemarketing.com or call (970) 587-3824.";
+        // Background send failed (slow reply, ad blocker, flaky network). Fall back to a normal
+        // form post so the request still reaches us; FormSubmit then sends the visitor to thanks.html.
+        status.textContent = 'Still sending...';
+        [['_subject', data._subject], ['_cc', data._cc], ['_next', new URL('thanks.html', location.href).href]].forEach(function (p) {
+          var input = form.querySelector('input[name="' + p[0] + '"]') || form.appendChild(Object.assign(document.createElement('input'), { type: 'hidden', name: p[0] }));
+          input.value = p[1];
+        });
+        HTMLFormElement.prototype.submit.call(form);
       });
   });
 
