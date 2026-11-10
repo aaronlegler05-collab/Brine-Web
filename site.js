@@ -121,6 +121,56 @@
     if (err) err.textContent = msg || '';
   }
 
+  // One question at a time, with a progress bar. Without JS, every step shows as one long form.
+  var steps = [].slice.call(form.querySelectorAll('.step'));
+  var back = form.querySelector('.ms-back'), next = form.querySelector('.ms-next'), sendBtn = form.querySelector('.ms-send');
+  var current = 0;
+  function goTo(i, focus) {
+    current = Math.max(0, Math.min(i, steps.length - 1));
+    steps.forEach(function (s, n) { s.classList.toggle('on', n === current); });
+    var last = current === steps.length - 1, auto = steps[current].hasAttribute('data-auto');
+    back.hidden = current === 0;
+    // Quick-pick steps move on by themselves when tapped; Continue appears once something is picked
+    next.hidden = last || (auto && !steps[current].querySelector('input:checked'));
+    sendBtn.hidden = !last;
+    if (auto) next.firstChild.textContent = 'Continue ';
+    else if (!last) next.firstChild.textContent = steps[current].querySelector('input[type=checkbox]:checked') || steps[current].querySelector('input[type=text]') ? 'Continue ' : 'Skip ';
+    var pct = Math.round((current + 1) / steps.length * 100);
+    document.getElementById('ms-fill').style.transform = 'scaleX(' + pct / 100 + ')';
+    document.getElementById('ms-count').textContent = 'Step ' + (current + 1) + ' of ' + steps.length;
+    document.getElementById('ms-pct').textContent = pct + '%';
+    if (focus) steps[current].querySelector('legend').focus({ preventScroll: true });
+  }
+  form.goToStepOf = function (el) { var i = steps.indexOf(el.closest('.step')); if (i >= 0) goTo(i); };
+  if (steps.length) {
+    form.classList.add('ms');
+    goTo(0);
+    back.addEventListener('click', function () { goTo(current - 1, true); });
+    next.addEventListener('click', function () {
+      var biz = steps[current].querySelector('#f-business');
+      if (biz && !biz.value.trim()) { setError(biz, 'Enter your business name.'); biz.focus(); return; }
+      goTo(current + 1, true);
+    });
+    var tapped = 0;
+    form.addEventListener('pointerdown', function () { tapped = Date.now(); });
+    form.addEventListener('click', function (e) {
+      // A tap or click on a choice (even one already picked) advances; arrow keys only select
+      var step = e.target.closest && e.target.closest('.step');
+      if (e.target.type === 'radio' && step && step.hasAttribute('data-auto') && Date.now() - tapped < 1000) {
+        var at = current;
+        setTimeout(function () { if (current === at) goTo(current + 1, true); }, 250);
+      }
+    });
+    form.addEventListener('change', function (e) {
+      var step = e.target.closest('.step');
+      if (step && !step.querySelector('#f-privacy')) goTo(current);
+    });
+    form.addEventListener('keydown', function (e) {
+      // Enter in a text box moves to the next question instead of sending early
+      if (e.key === 'Enter' && e.target.tagName === 'INPUT' && current < steps.length - 1) { e.preventDefault(); next.click(); }
+    });
+  }
+
   form.addEventListener('submit', function (e) {
     var f = form.elements;
     var firstBad = null;
@@ -140,6 +190,7 @@
       status.hidden = false;
       status.dataset.kind = 'error';
       status.textContent = 'A few details are missing. Check the highlighted fields.';
+      if (form.goToStepOf) form.goToStepOf(firstBad);
       firstBad.focus();
       return;
     }
@@ -148,6 +199,11 @@
     e.preventDefault();
     var btn = form.querySelector('button[type="submit"]');
     var data = Object.fromEntries(new FormData(form));
+    // Fold the quick-pick answers into the message so they show up in every email
+    var picks = [['Business type', data.industry], ['Main goal', data.goal]].filter(function (p) { return p[1]; })
+      .map(function (p) { return p[0] + ': ' + p[1]; }).join('\n');
+    if (picks) data.message = picks + (data.message ? '\n\n' + data.message : '');
+    data.package = data.package || 'Not sure yet, help me choose';
     data._subject = 'Brine Creative consult request: ' + data.business;
     data._cc = data.email;
     btn.disabled = true;

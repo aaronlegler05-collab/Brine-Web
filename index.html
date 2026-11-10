@@ -16,7 +16,7 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 56'><rect x='9' y='0' width='22' height='6' rx='2' fill='%2311241b'/><path d='M6 20 Q14 16 20 19 T35 19 V47 a5 5 0 0 1-5 5 H10 a5 5 0 0 1-5-5 Z' fill='%23a8d65b'/><rect x='3.5' y='10.5' width='33' height='44' rx='8' fill='none' stroke='%2311241b' stroke-width='3'/><rect x='15' y='16' width='10' height='32' rx='5' fill='%2311241b'/></svg>">
 <link rel="apple-touch-icon" href="assets/logo-square.png">
 <link rel="preload" href="assets/fonts/schibsted-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="home.css?v=21">
+<link rel="stylesheet" href="home.css?v=23">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Brine Creative","alternateName":["Brine Creative LLC","Brine Marketing"],"url":"https://brinemarketing.com/"}
 </script>
@@ -354,63 +354,102 @@
       <form class="book" id="book-form" action="https://formsubmit.co/BrineCreative@brinemarketing.com" method="POST" novalidate aria-describedby="form-privacy-note">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
-        <div class="row2">
-          <div class="field">
-            <label for="f-name">Your name</label>
-            <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-err">
-            <span class="err" id="f-name-err" aria-live="polite"></span>
+
+        <div class="ms-progress" aria-hidden="true">
+          <div class="ms-progress-top"><span id="ms-count">Step 1 of 6</span><span id="ms-pct">17%</span></div>
+          <div class="ms-track"><div class="ms-fill" id="ms-fill"></div></div>
+        </div>
+
+        <fieldset class="step" data-auto>
+          <legend tabindex="-1">What kind of business do you run?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="industry" value="Restaurant or cafe"><span>Restaurant or cafe</span></label>
+            <label class="choice"><input type="radio" name="industry" value="Salon or barber"><span>Salon or barber</span></label>
+            <label class="choice"><input type="radio" name="industry" value="Gym or fitness"><span>Gym or fitness</span></label>
+            <label class="choice"><input type="radio" name="industry" value="Contractor or home services"><span>Contractor or home services</span></label>
+            <label class="choice"><input type="radio" name="industry" value="Retail or boutique"><span>Retail or boutique</span></label>
+            <label class="choice"><input type="radio" name="industry" value="Real estate"><span>Real estate</span></label>
+            <label class="choice"><input type="radio" name="industry" value="Auto"><span>Auto</span></label>
+            <label class="choice"><input type="radio" name="industry" value="Something else"><span>Something else</span></label>
           </div>
+        </fieldset>
+
+        <fieldset class="step" data-auto>
+          <legend tabindex="-1">Which plan are you interested in?</legend>
+          <div class="choices plans-pick">
+            <label class="choice"><input type="radio" name="package" value="One-Time Video Shoot ($360)"><span><b>One-time shoot</b><small>1 video &middot; $360</small></span></label>
+            <label class="choice"><input type="radio" name="package" value="4 Video Package ($1,100/mo)"><span><b>4 videos a month</b><small>$1,100/mo</small></span></label>
+            <label class="choice"><input type="radio" name="package" value="8 Video Package ($1,950/mo)"><span><b>8 videos a month</b><small>$1,950/mo &middot; Recommended</small></span></label>
+            <label class="choice"><input type="radio" name="package" value="11 Video Package ($2,400/mo)"><span><b>11 videos a month</b><small>$2,400/mo</small></span></label>
+            <label class="choice wide"><input type="radio" name="package" value="Not sure yet, help me choose"><span><b>Not sure yet</b><small>Help me choose</small></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend tabindex="-1">Want any add-ons? <span class="hint">Pick as many as you like, or skip.</span></legend>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" id="f-addon-longform" name="addon_longform" value="Long-form video (+$600/mo)"><span><b>Long-form video</b><small>+$600/mo</small></span></label>
+            <label class="choice"><input type="checkbox" id="f-addon-gbp" name="addon_gbp" value="Google Business Profile management (+$400/mo)"><span><b>Google Business Profile</b><small>+$400/mo</small></span></label>
+            <label class="choice"><input type="checkbox" id="f-addon-dm" name="addon_dm" value="Comment and DM management (+$250/mo)"><span><b>Comment &amp; DM management</b><small>+$250/mo</small></span></label>
+            <label class="choice"><input type="checkbox" id="f-addon-extra" name="addon_extra" value="Extra short-form video (+$300 each)"><span><b>Extra short-form video</b><small>+$300 each</small></span></label>
+            <label class="choice"><input type="checkbox" id="f-addon-variations" name="addon_variations" value="Ad variations (+$75 per video)"><span><b>Ad variations</b><small>+$75 per video</small></span></label>
+            <label class="choice"><input type="checkbox" id="f-addon-photos" name="addon_photos" value="Photo package (+$200 per shoot)"><span><b>Photo package</b><small>+$200 per shoot</small></span></label>
+            <label class="choice"><input type="checkbox" id="f-addon-rush" name="addon_rush" value="Rush delivery (+$200 per video)"><span><b>Rush delivery</b><small>+$200 per video</small></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="step" data-auto>
+          <legend tabindex="-1">What's your main goal right now?</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="goal" value="More customers through the door"><span>More customers through the door</span></label>
+            <label class="choice"><input type="radio" name="goal" value="Grow our social media"><span>Grow our social media</span></label>
+            <label class="choice"><input type="radio" name="goal" value="Ads that actually bring in leads"><span>Ads that actually bring in leads</span></label>
+            <label class="choice"><input type="radio" name="goal" value="Promote a launch or event"><span>Promote a launch or event</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend tabindex="-1">Tell us about your business</legend>
           <div class="field">
             <label for="f-business">Business name</label>
             <input id="f-business" name="business" type="text" autocomplete="organization" required aria-describedby="f-business-err">
             <span class="err" id="f-business-err" aria-live="polite"></span>
           </div>
-        </div>
-        <div class="row2">
+          <div class="field">
+            <label for="f-message">Anything we should know? <span class="hint">(optional)</span></label>
+            <textarea id="f-message" name="message" placeholder="What you do, who your customers are, what you'd like more of"></textarea>
+          </div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend tabindex="-1">Where should we reach you?</legend>
+          <div class="row2">
+            <div class="field">
+              <label for="f-name">Your name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-err">
+              <span class="err" id="f-name-err" aria-live="polite"></span>
+            </div>
+            <div class="field">
+              <label for="f-phone">Phone <span class="hint">(optional)</span></label>
+              <input id="f-phone" name="phone" type="tel" autocomplete="tel">
+            </div>
+          </div>
           <div class="field">
             <label for="f-email">Email</label>
             <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-err">
             <span class="err" id="f-email-err" aria-live="polite"></span>
           </div>
-          <div class="field">
-            <label for="f-phone">Phone <span class="hint">(optional)</span></label>
-            <input id="f-phone" name="phone" type="tel" autocomplete="tel">
-          </div>
-        </div>
-        <div class="field">
-          <label for="f-package">What are you interested in?</label>
-          <select id="f-package" name="package">
-            <option>Not sure yet, help me choose</option>
-            <option>One-Time Video Shoot ($360)</option>
-            <option>4 Video Package ($1,100/mo)</option>
-            <option>8 Video Package ($1,950/mo)</option>
-            <option>11 Video Package ($2,400/mo)</option>
-          </select>
-        </div>
-        <fieldset class="field addon-pick">
-          <legend>Add-ons</legend>
-          <div class="addon-checks">
-          <label class="consent"><input type="checkbox" id="f-addon-longform" name="addon_longform" value="Long-form video (+$600/mo)"><span>Long-form video (+$600/mo)</span></label>
-          <label class="consent"><input type="checkbox" id="f-addon-gbp" name="addon_gbp" value="Google Business Profile management (+$400/mo)"><span>Google Business Profile management (+$400/mo)</span></label>
-          <label class="consent"><input type="checkbox" id="f-addon-dm" name="addon_dm" value="Comment and DM management (+$250/mo)"><span>Comment and DM management (+$250/mo)</span></label>
-          <label class="consent"><input type="checkbox" id="f-addon-extra" name="addon_extra" value="Extra short-form video (+$300 each)"><span>Extra short-form video (+$300 each)</span></label>
-          <label class="consent"><input type="checkbox" id="f-addon-variations" name="addon_variations" value="Ad variations (+$75 per video)"><span>Ad variations (+$75 per video)</span></label>
-          <label class="consent"><input type="checkbox" id="f-addon-photos" name="addon_photos" value="Photo package (+$200 per shoot)"><span>Photo package (+$200 per shoot)</span></label>
-          <label class="consent"><input type="checkbox" id="f-addon-rush" name="addon_rush" value="Rush delivery (+$200 per video)"><span>Rush delivery (+$200 per video)</span></label>
+          <div class="consents">
+            <label class="consent"><input type="checkbox" id="f-privacy" name="privacy" value="yes" required aria-describedby="f-privacy-err"><span>I've read the <a href="privacy.html">Privacy Policy</a> and agree to Brine Creative using these details to reply to me. <span class="err" id="f-privacy-err" aria-live="polite"></span></span></label>
+            <label class="consent"><input type="checkbox" id="f-adult" name="adult" value="yes" required aria-describedby="f-adult-err"><span>I'm 18 or older and asking on behalf of a business. <span class="err" id="f-adult-err" aria-live="polite"></span></span></label>
+            <label class="consent"><input type="checkbox" id="f-updates" name="updates" value="yes"><span class="opt">Optional: email me occasional updates and offers. Every email has an unsubscribe link.</span></label>
           </div>
         </fieldset>
-        <div class="field">
-          <label for="f-message">About your business <span class="hint">(optional)</span></label>
-          <textarea id="f-message" name="message" placeholder="What you do, who your customers are, what you'd like more of"></textarea>
-        </div>
-        <fieldset class="consents">
-          <legend class="sr-only">Consent</legend>
-          <label class="consent"><input type="checkbox" id="f-privacy" name="privacy" value="yes" required aria-describedby="f-privacy-err"><span>I've read the <a href="privacy.html">Privacy Policy</a> and agree to Brine Creative using these details to reply to me. <span class="err" id="f-privacy-err" aria-live="polite"></span></span></label>
-          <label class="consent"><input type="checkbox" id="f-adult" name="adult" value="yes" required aria-describedby="f-adult-err"><span>I'm 18 or older and asking on behalf of a business. <span class="err" id="f-adult-err" aria-live="polite"></span></span></label>
-          <label class="consent"><input type="checkbox" id="f-updates" name="updates" value="yes"><span class="opt">Optional: email me occasional updates and offers. Every email has an unsubscribe link.</span></label>
-        </fieldset>
+
         <div class="form-foot">
-          <button class="btn btn-lime" type="submit">Send request <svg aria-hidden="true"><use href="#arrow"/></svg></button>
+          <button class="btn btn-dark ms-back" type="button" hidden>Back</button>
+          <button class="btn btn-lime ms-next" type="button" hidden>Continue <svg aria-hidden="true"><use href="#arrow"/></svg></button>
+          <button class="btn btn-lime ms-send" type="submit">Send request <svg aria-hidden="true"><use href="#arrow"/></svg></button>
           <p id="form-privacy-note">Your request comes straight to us, and you'll get a copy by email.</p>
         </div>
         <div class="form-status" id="form-status" role="status" aria-live="polite" hidden></div>
@@ -452,7 +491,7 @@
   <div class="row"><button class="btn btn-lime btn-sm" type="button" data-consent="granted">Accept</button><button class="btn btn-dark btn-sm" type="button" data-consent="denied">Decline</button></div>
 </aside>
 
-<script src="site.js?v=10"></script>
-<script src="home.js?v=13"></script>
+<script src="site.js?v=13"></script>
+<script src="home.js?v=14"></script>
 </body>
 </html>

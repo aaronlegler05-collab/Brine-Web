@@ -34,8 +34,8 @@
   // Plan buttons pre-select the matching package in the form
   document.querySelectorAll('[data-package]').forEach(function (a) {
     a.addEventListener('click', function () {
-      var sel = document.getElementById('f-package');
-      if (sel) sel.value = a.dataset.package;
+      var r = document.querySelector('#book-form input[name="package"][value="' + a.dataset.package + '"]');
+      if (r) r.checked = true;
     });
   });
 })();
