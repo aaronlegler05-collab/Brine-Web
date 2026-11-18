@@ -172,7 +172,7 @@ a{color:inherit}
 
 /* Founder */
 .founder{max-width:320px;margin:0 auto;padding:12px;border-radius:var(--r);background:var(--card);box-shadow:inset 0 0 0 1px var(--line);text-align:center}
-.founder img,.founder-ph{width:100%;aspect-ratio:4/5;border-radius:12px;object-fit:cover}
+.founder img,.founder-ph{width:100%;height:auto;aspect-ratio:4/5;border-radius:12px;object-fit:cover;object-position:50% 20%}
 .founder-ph{display:grid;place-items:center;background:radial-gradient(90% 60% at 50% 100%,rgba(168,214,91,.3),transparent 60%),linear-gradient(170deg,var(--brine),#12261a)}
 .founder-ph svg{width:72px;height:100px;color:var(--lime);opacity:.85;--jar-liquid:#1d3f2a;--jar-ground:#1d3f2a}
 .founder figcaption{padding:16px 6px 6px;color:var(--muted);font-size:.92rem}
